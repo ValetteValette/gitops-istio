@@ -4,7 +4,7 @@ metadata:
   name: istio-operator
   namespace: flux-system
 spec:
-  interval: 10m0s
+  interval: 1m0s
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -25,7 +25,7 @@ metadata:
 spec:
   dependsOn:
     - name: istio-operator
-  interval: 10m0s
+  interval: 1m0s
   sourceRef:
     kind: GitRepository
     name: flux-system
@@ -54,7 +54,7 @@ metadata:
 spec:
   dependsOn:
     - name: istio-system
-  interval: 10m0s
+  interval: 1m0s
   sourceRef:
     kind: GitRepository
     name: flux-system
