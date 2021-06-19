@@ -31,7 +31,7 @@ spec:
     includeLabelPrefix: app
     slack:
       secretRef:
-        name: slack-deployment-webhook
+        name: slack-deployment-webhooks
       user: flagger
       channel: software-deployments
 ---
