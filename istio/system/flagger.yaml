@@ -32,6 +32,7 @@ spec:
     slack:
       url: https://hooks.slack.com/services/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
       user: flagger
+      channel: software-deployments
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
