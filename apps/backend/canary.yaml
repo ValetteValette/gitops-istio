@@ -6,7 +6,7 @@ metadata:
   namespace: istio-system
 spec:
   type: slack
-  channel: software-deployments
+  # channel: software-deployments
   username: flagger
   # secret containing the webhook address (optional)
   secretRef:
