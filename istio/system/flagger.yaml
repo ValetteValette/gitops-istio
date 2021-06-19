@@ -46,16 +46,3 @@ spec:
   releaseName: flagger-grafana
   values:
     url: http://prometheus.istio-system:9090
----
-apiVersion: flagger.app/v1beta1
-kind: AlertProvider
-metadata:
-  name: slack-deployment-alert
-  namespace: istio-system
-spec:
-  type: slack
-  channel: software-deployments
-  username: flagger
-  # secret containing the webhook address (optional)
-  secretRef:
-    name: slack-deployment-webhook
