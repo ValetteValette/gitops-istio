@@ -74,3 +74,39 @@ spec:
                     secretKeyRef:
                       name: ecr-renew-cred
                       key: SECRET
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: lcs
+  name: ecr-renew
+  labels:
+    app: ecr-renew
+spec:
+    template:
+      spec:
+        restartPolicy: OnFailure
+        serviceAccountName: ecr-renew
+        containers:
+          - name: ecr-renew
+            image: nabsul/k8s-ecr-login-renew:v1.5
+            env:
+              - name: DOCKER_SECRET_NAME
+                value: ecr-docker-login
+              - name: TARGET_NAMESPACE
+                value: lcs
+              - name: AWS_REGION
+                valueFrom:
+                  secretKeyRef:
+                    name: ecr-renew-cred
+                    key: REGION
+              - name: AWS_ACCESS_KEY_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: ecr-renew-cred
+                    key: ID
+              - name: AWS_SECRET_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: ecr-renew-cred
+                    key: SECRET
