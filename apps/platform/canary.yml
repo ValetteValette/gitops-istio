@@ -26,8 +26,8 @@ spec:
     # Istio virtual service host names (optional)
     hosts:
     - "*"
+  skipAnalysis: true
   analysis:
-    skipAnalysis: true
     # schedule interval (default 60s)
     interval: 15s
     # max number of failed metric checks before rollback
