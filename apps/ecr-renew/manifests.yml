@@ -79,9 +79,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   namespace: lcs
-  name: ecr-renew
-  labels:
-    app: ecr-renew
+  name: ecr-renew-manual
 spec:
     template:
       spec:
