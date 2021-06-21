@@ -2,18 +2,18 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    k8s-app: oauth2-proxy
+    app: oauth2-proxy
   name: oauth2-proxy
   namespace: lcs
 spec:
   replicas: 1
   selector:
     matchLabels:
-      k8s-app: oauth2-proxy
+      app: oauth2-proxy
   template:
     metadata:
       labels:
-        k8s-app: oauth2-proxy
+        app: oauth2-proxy
     spec:
       containers:
         - args:
@@ -63,7 +63,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    k8s-app: oauth2-proxy
+    app: oauth2-proxy
   name: oauth2-proxy
   namespace: lcs
 spec:
@@ -73,7 +73,7 @@ spec:
       protocol: TCP
       targetPort: 4180
   selector:
-    k8s-app: oauth2-proxy
+    app: oauth2-proxy
 ---
 apiVersion: flagger.app/v1beta1
 kind: Canary
