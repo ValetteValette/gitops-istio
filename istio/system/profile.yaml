@@ -5,3 +5,5 @@ metadata:
   name: istio-default
 spec:
   profile: demo
+  meshConfig:
+    accessLogFile: /dev/stdout

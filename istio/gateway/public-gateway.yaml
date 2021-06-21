@@ -12,20 +12,6 @@ spec:
         name: http
         protocol: HTTP
       hosts:
-        - "*"
----
-apiVersion: networking.istio.io/v1alpha3
-kind: Gateway
-metadata:
-  name: public-gateway-lcs
-  namespace: istio-system
-spec:
-  selector:
-    istio: ingressgateway
-  servers:
-    - port:
-        number: 443
-        name: http
-        protocol: HTTP
-      hosts:
-        - "*"
+        - "podinfo.lynceus.ai"
+        - "oauth2-proxy.lynceus.ai"
+        - "app.lynceus.ai"
