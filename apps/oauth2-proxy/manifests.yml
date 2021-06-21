@@ -134,105 +134,20 @@ spec:
       # scale up if usage is above
       # 99% of the requested CPU (100m)
       targetAverageUtilization: 99
----
-apiVersion: security.istio.io/v1beta1
-kind: AuthorizationPolicy
-metadata:
-  name: frontend
-  namespace: prod 
-spec:
-  selector:
-    matchLabels:
-      app: frontend
-  action: CUSTOM
-  provider:
-    name: "oauth2-proxy.lcs"
-  rules:
-  - to:
-    - operation:
-        notPaths: ["/ip"]
----
-apiVersion: security.istio.io/v1beta1
-kind: AuthorizationPolicy
-metadata:
-  name: backend
-  namespace: prod 
-spec:
-  selector:
-    matchLabels:
-      app: backend
-  action: CUSTOM
-  provider:
-    name: "oauth2-proxy.lcs"
-  rules:
-  - to:
-    - operation:
-        notPaths: ["/ip"]
----
-apiVersion: security.istio.io/v1beta1
-kind: AuthorizationPolicy
-metadata:
-  name: frontend-primary
-  namespace: prod 
-spec:
-  selector:
-    matchLabels:
-      app: frontend-primary
-  action: CUSTOM
-  provider:
-    name: "oauth2-proxy.lcs"
-  rules:
-  - to:
-    - operation:
-        notPaths: ["/ip"]
----
-apiVersion: security.istio.io/v1beta1
-kind: AuthorizationPolicy
-metadata:
-  name: backend-primary
-  namespace: prod 
-spec:
-  selector:
-    matchLabels:
-      app: backend-primary
-  action: CUSTOM
-  provider:
-    name: "oauth2-proxy.lcs"
-  rules:
-  - to:
-    - operation:
-        notPaths: ["/ip"]
----
-apiVersion: security.istio.io/v1beta1
-kind: AuthorizationPolicy
-metadata:
-  name: frontend-canary
-  namespace: prod 
-spec:
-  selector:
-    matchLabels:
-      app: frontend-canary
-  action: CUSTOM
-  provider:
-    name: "oauth2-proxy.lcs"
-  rules:
-  - to:
-    - operation:
-        notPaths: ["/ip"]
----
-apiVersion: security.istio.io/v1beta1
-kind: AuthorizationPolicy
-metadata:
-  name: backend-canary
-  namespace: prod 
-spec:
-  selector:
-    matchLabels:
-      app: backend-canary
-  action: CUSTOM
-  provider:
-    name: "oauth2-proxy.lcs"
-  rules:
-  - to:
-    - operation:
-        notPaths: ["/ip"]
+#---
+#apiVersion: security.istio.io/v1beta1
+#kind: AuthorizationPolicy
+#metadata:
+#  name: frontend
+#  namespace: prod 
+#spec:
+#  selector:
+#    matchLabels:
+#      app: frontend
+#  action: CUSTOM
+#  provider:
+#    name: "oauth2-proxy.lcs"
+#  rules:
+#  - to:
+#    - operation:
+#        notPaths: ["/ip"]
