@@ -58,62 +58,79 @@ spec:
           ports:
             - containerPort: 4180
               protocol: TCP
-#---
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  labels:
-#    app: oauth2-proxy
-#  name: oauth2-proxy
-#  namespace: lcs
-#spec:
-#  ports:
-#    - name: http
-#      port: 4180
-#      protocol: TCP
-#      targetPort: 4180
-#  selector:
-#    app: oauth2-proxy
 ---
-apiVersion: flagger.app/v1beta1
-kind: Canary
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: oauth2-proxy
+  name: oauth2-proxy
+  namespace: lcs
+spec:
+  ports:
+    - name: http
+      port: 4180
+      protocol: TCP
+      targetPort: 4180
+  selector:
+    app: oauth2-proxy
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
 metadata:
   name: oauth2-proxy
   namespace: lcs
 spec:
-  # deployment reference
-  targetRef:
-    apiVersion: apps/v1
-    kind: Deployment
-    name: oauth2-proxy
-  # the maximum time in seconds for the canary deployment
-  # to make progress before it is rollback (default 600s)
-  progressDeadlineSeconds: 60
-  # HPA reference (optional)
-  autoscalerRef:
-    apiVersion: autoscaling/v2beta1
-    kind: HorizontalPodAutoscaler
-    name: oauth2-proxy
-  service:
-    # container port
-    port: 4180
-    # Istio gateways (optional)
+  gateways:
+  - public-gateway.istio-system
+  hosts:
+  - oauth2-proxy.lynceus.ai
+  http:
+  - route:
+    - destination:
+        host: oauth2-proxy
+        port:
+          number: 4180
+#---
+#apiVersion: flagger.app/v1beta1
+#kind: Canary
+#metadata:
+#  name: oauth2-proxy
+#  namespace: lcs
+#spec:
+#  # deployment reference
+#  targetRef:
+#    apiVersion: apps/v1
+#    kind: Deployment
+#    name: oauth2-proxy
+#  # the maximum time in seconds for the canary deployment
+#  # to make progress before it is rollback (default 600s)
+#  progressDeadlineSeconds: 60
+#  # HPA reference (optional)
+#  autoscalerRef:
+#    apiVersion: autoscaling/v2beta1
+#    kind: HorizontalPodAutoscaler
+#    name: oauth2-proxy
+#  service:
+#    # container port
+#    port: 4180
+#    # Istio gateways (optional)
+##    gateways:
+##    - istio-system/public-gateway-oauth2-proxy
 #    gateways:
-#    - istio-system/public-gateway-oauth2-proxy
-    gateways:
-    - istio-system/public-gateway
-    # Istio virtual service host names (optional)
-    hosts:
-    - "oauth2-proxy.lynceus.ai"
-  skipAnalysis: true
-  analysis:
-    # schedule interval (default 60s)
-    interval: 15s
-    # max number of failed metric checks before rollback
-    threshold: 10
-    # total number of iterations
-    iterations: 10
-    # canary match condition
+#    - istio-system/public-gateway
+#    # Istio virtual service host names (optional)
+#    hosts:
+#    - "oauth2-proxy.lynceus.ai"
+#  skipAnalysis: true
+#  analysis:
+#    # schedule interval (default 60s)
+#    interval: 15s
+#    # max number of failed metric checks before rollback
+#    threshold: 10
+#    # total number of iterations
+#    iterations: 10
+#    # canary match condition
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
