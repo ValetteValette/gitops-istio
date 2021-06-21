@@ -58,22 +58,22 @@ spec:
           ports:
             - containerPort: 4180
               protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: oauth2-proxy
-  name: oauth2-proxy
-  namespace: lcs
-spec:
-  ports:
-    - name: http
-      port: 4180
-      protocol: TCP
-      targetPort: 4180
-  selector:
-    app: oauth2-proxy
+#---
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  labels:
+#    app: oauth2-proxy
+#  name: oauth2-proxy
+#  namespace: lcs
+#spec:
+#  ports:
+#    - name: http
+#      port: 4180
+#      protocol: TCP
+#      targetPort: 4180
+#  selector:
+#    app: oauth2-proxy
 ---
 apiVersion: flagger.app/v1beta1
 kind: Canary
