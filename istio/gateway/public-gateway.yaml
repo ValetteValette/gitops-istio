@@ -13,5 +13,13 @@ spec:
         protocol: HTTP
       hosts:
         - "podinfo.lynceus.ai"
-        - "oauth2-proxy.lynceus.ai"
         - "app.lynceus.ai"
+    - port:
+        number: 443
+        name: https
+        protocol: HTTPS
+      tls:
+        mode: SIMPLE
+        credentialName: app-credential
+      hosts:
+        - "oauth2-proxy.lynceus.ai"

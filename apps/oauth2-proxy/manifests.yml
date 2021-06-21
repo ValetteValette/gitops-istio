@@ -6,7 +6,13 @@ metadata:
   name: oauth2-proxy
   namespace: lcs
 spec:
-  replicas: 1
+  minReadySeconds: 5
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
   selector:
     matchLabels:
       app: oauth2-proxy
@@ -23,7 +29,7 @@ spec:
             - --cookie-name=_oauth2_proxy
             - --cookie-secure=false
             - --pass-access-token=true
-            #- --pass-authorization-header=true
+            - --pass-authorization-header=true
             - --set-authorization-header=true
             - --set-xauthrequest=true
             #- --oidc-issuer-url=https://auth.justin-tech.com/auth/realms/Justin-Tech
@@ -41,7 +47,7 @@ spec:
             - --upstream=static://200
             #- --redis-connection-url=redis://redis-master.default.svc.cluster.local:6379
             #- --session-store-type=redis
-            #- --reverse-proxy
+            - --reverse-proxy
           env:
             - name: OAUTH2_PROXY_CLIENT_ID
               value: 722123184862-toa7r1ou2poem6qhaedh7pj2g2n0pu3q.apps.googleusercontent.com
@@ -58,79 +64,62 @@ spec:
           ports:
             - containerPort: 4180
               protocol: TCP
----
-apiVersion: v1
-kind: Service
-metadata:
-  labels:
-    app: oauth2-proxy
-  name: oauth2-proxy
-  namespace: lcs
-spec:
-  ports:
-    - name: http
-      port: 4180
-      protocol: TCP
-      targetPort: 4180
-  selector:
-    app: oauth2-proxy
----
-apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
-metadata:
-  name: oauth2-proxy
-  namespace: lcs
-spec:
-  gateways:
-  - public-gateway.istio-system
-  hosts:
-  - oauth2-proxy.lynceus.ai
-  http:
-  - route:
-    - destination:
-        host: oauth2-proxy
-        port:
-          number: 4180
 #---
-#apiVersion: flagger.app/v1beta1
-#kind: Canary
+#apiVersion: v1
+#kind: Service
 #metadata:
+#  labels:
+#    app: oauth2-proxy
 #  name: oauth2-proxy
 #  namespace: lcs
 #spec:
-#  # deployment reference
-#  targetRef:
-#    apiVersion: apps/v1
-#    kind: Deployment
-#    name: oauth2-proxy
-#  # the maximum time in seconds for the canary deployment
-#  # to make progress before it is rollback (default 600s)
-#  progressDeadlineSeconds: 60
-#  # HPA reference (optional)
-#  autoscalerRef:
-#    apiVersion: autoscaling/v2beta1
-#    kind: HorizontalPodAutoscaler
-#    name: oauth2-proxy
-#  service:
-#    # container port
-#    port: 4180
-#    # Istio gateways (optional)
-##    gateways:
-##    - istio-system/public-gateway-oauth2-proxy
+#  ports:
+#    - name: http
+#      port: 4180
+#      protocol: TCP
+#      targetPort: 4180
+#  selector:
+#    app: oauth2-proxy
+---
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: oauth2-proxy
+  namespace: lcs
+spec:
+  # deployment reference
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: oauth2-proxy
+  # the maximum time in seconds for the canary deployment
+  # to make progress before it is rollback (default 600s)
+  progressDeadlineSeconds: 60
+  # HPA reference (optional)
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta1
+    kind: HorizontalPodAutoscaler
+    name: oauth2-proxy
+  service:
+    # container port
+    port: 4180
+    # Istio gateways (optional)
 #    gateways:
-#    - istio-system/public-gateway
-#    # Istio virtual service host names (optional)
-#    hosts:
-#    - "oauth2-proxy.lynceus.ai"
-#  skipAnalysis: true
-#  analysis:
-#    # schedule interval (default 60s)
-#    interval: 15s
-#    # max number of failed metric checks before rollback
-#    threshold: 10
-#    # total number of iterations
-#    iterations: 10
-#    # canary match condition
+#    - istio-system/public-gateway-oauth2-proxy
+    gateways:
+    - istio-system/public-gateway
+    # Istio virtual service host names (optional)
+    hosts:
+    - "oauth2-proxy.lynceus.ai"
+  skipAnalysis: true
+  analysis:
+    # schedule interval (default 60s)
+    interval: 15s
+    # max number of failed metric checks before rollback
+    threshold: 10
+    # total number of iterations
+    iterations: 10
+    # canary match condition
 ---
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
@@ -151,20 +140,54 @@ spec:
       # scale up if usage is above
       # 99% of the requested CPU (100m)
       targetAverageUtilization: 99
-#---
-#apiVersion: security.istio.io/v1beta1
-#kind: AuthorizationPolicy
-#metadata:
-#  name: frontend
-#  namespace: prod 
-#spec:
-#  selector:
-#    matchLabels:
-#      app: frontend
-#  action: CUSTOM
-#  provider:
-#    name: "oauth2-proxy.lcs"
-#  rules:
-#  - to:
-#    - operation:
-#        notPaths: ["/ip"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: frontend
+  namespace: prod 
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  action: CUSTOM
+  provider:
+    name: "oauth2-proxy.lcs"
+  rules:
+  - to:
+    - operation:
+        notPaths: ["/ip"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: frontend-primary
+  namespace: prod 
+spec:
+  selector:
+    matchLabels:
+      app: frontend-primary
+  action: CUSTOM
+  provider:
+    name: "oauth2-proxy.lcs"
+  rules:
+  - to:
+    - operation:
+        notPaths: ["/ip"]
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: frontend-canary
+  namespace: prod 
+spec:
+  selector:
+    matchLabels:
+      app: frontend-canary
+  action: CUSTOM
+  provider:
+    name: "oauth2-proxy.lcs"
+  rules:
+  - to:
+    - operation:
+        notPaths: ["/ip"]
