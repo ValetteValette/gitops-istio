@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-docs
+  namespace: lcs
+  labels:
+    app: platform-docs
+spec:
+  minReadySeconds: 5
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: platform-docs
+  template:
+    metadata:
+      labels:
+        app: platform-docs
+    spec:
+      imagePullSecrets:
+      - name: ecr-docker-login
+      containers:
+      - name: platform-docs
+        image: 615740825886.dkr.ecr.eu-west-3.amazonaws.com/lynceus-platform-docs:0.3.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 250m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 512Mi

@@ -25,3 +25,12 @@ spec:
         credentialName: podinfo-app-lynceus-ai-credential
       hosts:
         - "podinfo.app.lynceus.ai"
+    - port:
+        number: 443
+        name: https-docs-app-lynceus-ai
+        protocol: HTTPS
+      tls:
+        mode: MUTUAL
+        credentialName: docs-app-lynceus-ai-credential
+      hosts:
+        - "docs.app.lynceus.ai"
