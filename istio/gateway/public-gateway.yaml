@@ -13,9 +13,9 @@ spec:
         protocol: HTTPS
       tls:
         mode: MUTUAL
-        credentialName: app-valette-sexy-credential
+        credentialName: app-lynceus-ai-credential
       hosts:
-        - "app.valette.sexy"
+        - "app.lynceus.ai"
     - port:
         number: 443
         name: https-podinfo-app-lynceus-ai
