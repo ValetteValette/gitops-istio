@@ -8,18 +8,11 @@ spec:
     istio: ingressgateway
   servers:
     - port:
-        number: 80
-        name: http
-        protocol: HTTP
-      hosts:
-        - "podinfo.lynceus.ai"
-        - "app.lynceus.ai"
-    - port:
         number: 443
-        name: https
+        name: https-app-lynceus-ai
         protocol: HTTPS
       tls:
-        mode: SIMPLE
-        credentialName: app-credential
+        mode: MUTUAL
+        credentialName: app-lynceus-ai-credential
       hosts:
-        - "oauth2-proxy.lynceus.ai"
+        - "app.lynceus.ai"
