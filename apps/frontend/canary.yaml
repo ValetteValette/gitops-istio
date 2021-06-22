@@ -25,7 +25,7 @@ spec:
     - istio-system/public-gateway
     # Istio virtual service host names (optional)
     hosts:
-    - "podinfo.lynceus.ai"
+    - "app.lynceus.ai"
   analysis:
     # schedule interval (default 60s)
     interval: 15s
