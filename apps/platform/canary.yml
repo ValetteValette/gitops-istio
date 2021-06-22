@@ -25,7 +25,7 @@ spec:
     - istio-system/public-gateway
     # Istio virtual service host names (optional)
     hosts:
-    - "bloup.lynceus.ai"
+    - "app.lynceus.ai"
   skipAnalysis: true
   analysis:
     # schedule interval (default 60s)
