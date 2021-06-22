@@ -21,6 +21,8 @@ spec:
       labels:
         app: platform
     spec:
+      imagePullSecrets:
+      - name: ecr-docker-login
       containers:
       - name: platform
         image: 615740825886.dkr.ecr.eu-west-3.amazonaws.com/lynceus-platform:0.3.0
@@ -29,5 +31,10 @@ spec:
         - containerPort: 8000
           name: http
           protocol: TCP
-      imagePullSecrets:
-      - name: ecr-docker-login
+        resources:
+          limits:
+            cpu: 250m
+            memory: 512Mi
+          requests:
+            cpu: 250m
+            memory: 512Mi
