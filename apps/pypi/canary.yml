@@ -1,0 +1,37 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: pypi
+  namespace: lcs
+spec:
+  # deployment reference
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: pypi
+  # the maximum time in seconds for the canary deployment
+  # to make progress before it is rollback (default 600s)
+  progressDeadlineSeconds: 60
+  # HPA reference (optional)
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta1
+    kind: HorizontalPodAutoscaler
+    name: pypi
+  service:
+    # container port
+    port: 8000
+    # Istio gateways (optional)
+    gateways:
+    - istio-system/public-gateway
+    # Istio virtual service host names (optional)
+    hosts:
+    - "pypi.app.lynceus.ai"
+  skipAnalysis: true
+  analysis:
+    # schedule interval (default 60s)
+    interval: 15s
+    # max number of failed metric checks before rollback
+    threshold: 10
+    # total number of iterations
+    iterations: 10
+    # canary match condition

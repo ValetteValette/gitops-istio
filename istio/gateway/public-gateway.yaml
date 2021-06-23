@@ -34,3 +34,12 @@ spec:
         credentialName: docs-app-lynceus-ai-credential
       hosts:
         - "docs.app.lynceus.ai"
+    - port:
+        number: 443
+        name: https-pypi-app-lynceus-ai
+        protocol: HTTPS
+      tls:
+        mode: MUTUAL
+        credentialName: pypi-app-lynceus-ai-credential
+      hosts:
+        - "pypi.app.lynceus.ai"

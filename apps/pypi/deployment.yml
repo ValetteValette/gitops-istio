@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pypi
+  namespace: lcs
+  labels:
+    app: pypi
+spec:
+  minReadySeconds: 5
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: pypi
+  template:
+    metadata:
+      labels:
+        app: pypi
+    spec:
+      imagePullSecrets:
+      - name: ecr-docker-login
+      containers:
+      - name: pypi
+        image: pypiserver/pypiserver:v1.4.2
+        imagePullPolicy: IfNotPresent
+        args:
+          - "-P"
+          - "."
+          - "-a"
+          - "."
+          - "i"
+          - "0"
+          - "-p"
+          - "8000"
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
