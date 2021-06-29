@@ -38,8 +38,8 @@ metadata:
     app: ecr-renew
 spec:
   schedule: "0 */6 * * *"
-  successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 5
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
       template:
@@ -79,33 +79,33 @@ metadata:
   namespace: lcs
   name: ecr-renew-manual
 spec:
-    template:
-      metadata:
-        annotations:
-          sidecar.istio.io/inject: "false"
-      spec:
-        restartPolicy: OnFailure
-        serviceAccountName: ecr-renew
-        containers:
-          - name: ecr-renew
-            image: nabsul/k8s-ecr-login-renew:v1.5
-            env:
-              - name: DOCKER_SECRET_NAME
-                value: ecr-docker-login
-              - name: TARGET_NAMESPACE
-                value: lcs
-              - name: AWS_REGION
-                valueFrom:
-                  secretKeyRef:
-                    name: ecr-renew-cred
-                    key: REGION
-              - name: AWS_ACCESS_KEY_ID
-                valueFrom:
-                  secretKeyRef:
-                    name: ecr-renew-cred
-                    key: ID
-              - name: AWS_SECRET_ACCESS_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: ecr-renew-cred
-                    key: SECRET
+  template:
+    metadata:
+      annotations:
+        sidecar.istio.io/inject: "false"
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: ecr-renew
+      containers:
+        - name: ecr-renew
+          image: nabsul/k8s-ecr-login-renew:v1.5
+          env:
+            - name: DOCKER_SECRET_NAME
+              value: ecr-docker-login
+            - name: TARGET_NAMESPACE
+              value: lcs
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: ecr-renew-cred
+                  key: REGION
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: ecr-renew-cred
+                  key: ID
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ecr-renew-cred
+                  key: SECRET
