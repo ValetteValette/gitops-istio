@@ -46,6 +46,11 @@ data:
       static_configs:
       - targets:
         - platform.lcs.svc.cluster.local:8000
+      metric_relabel_configs:
+        - source_labels: [ __name__ ]
+          target_label: __name__
+          action: replace
+          replacement: platform_${1}
     - job_name: prometheus
       static_configs:
       - targets:
