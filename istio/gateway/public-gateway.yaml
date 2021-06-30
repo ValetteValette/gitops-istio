@@ -61,12 +61,12 @@ spec:
         credentialName: tracing-monitoring-app-lynceus-ai-credential
       hosts:
         - "tracing.monitoring.app.lynceus.ai"
-          #    - port:
-          #        number: 443
-          #        name: https-dashboard-monitoring-app-lynceus-ai
-          #        protocol: HTTPS
-          #      tls:
-          #        mode: MUTUAL
-          #        credentialName: dashboard-monitoring-app-lynceus-ai-credential
-          #      hosts:
-          #        - "dashboard.monitoring.app.lynceus.ai"
+    - port:
+        number: 443
+        name: https-dashboard-monitoring-app-lynceus-ai
+        protocol: HTTPS
+      tls:
+        mode: MUTUAL
+        credentialName: dashboard-monitoring-app-lynceus-ai-credential
+      hosts:
+        - "dashboard.monitoring.app.lynceus.ai"
