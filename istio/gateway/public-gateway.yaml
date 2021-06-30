@@ -43,3 +43,30 @@ spec:
         credentialName: pypi-app-lynceus-ai-credential
       hosts:
         - "pypi.app.lynceus.ai"
+    - port:
+        number: 443
+        name: https-metering-monitoring-app-lynceus-ai
+        protocol: HTTPS
+      tls:
+        mode: MUTUAL
+        credentialName: metering-monitoring-app-lynceus-ai-credential
+      hosts:
+        - "metering.monitoring.app.lynceus.ai"
+          #    - port:
+          #        number: 443
+          #        name: https-tracing-monitoring-app-lynceus-ai
+          #        protocol: HTTPS
+          #      tls:
+          #        mode: MUTUAL
+          #        credentialName: tracing-monitoring-app-lynceus-ai-credential
+          #      hosts:
+          #        - "tracing.monitoring.app.lynceus.ai"
+          #    - port:
+          #        number: 443
+          #        name: https-dashboard-monitoring-app-lynceus-ai
+          #        protocol: HTTPS
+          #      tls:
+          #        mode: MUTUAL
+          #        credentialName: dashboard-monitoring-app-lynceus-ai-credential
+          #      hosts:
+          #        - "dashboard.monitoring.app.lynceus.ai"
