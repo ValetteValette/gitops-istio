@@ -70,7 +70,6 @@ spec:
         port:
           number: 80
         host: jaeger
-
 ---
 apiVersion: v1
 kind: Service
@@ -80,7 +79,7 @@ metadata:
   labels:
     app: jaeger
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
     - name: http-query
       port: 80
