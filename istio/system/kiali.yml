@@ -21,8 +21,6 @@ spec:
       openAPIV3Schema:
         type: object
         x-kubernetes-preserve-unknown-fields: true
-...
-
 ---
 # Source: kiali-server/templates/serviceaccount.yaml
 apiVersion: v1
@@ -39,7 +37,6 @@ metadata:
     app.kubernetes.io/version: "v1.34.0"
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/part-of: "kiali"
-...
 ---
 # Source: kiali-server/templates/configmap.yaml
 apiVersion: v1
@@ -119,7 +116,6 @@ data:
       metrics_port: 9090
       port: 20001
       web_root: /kiali
-...
 ---
 # Source: kiali-server/templates/role-viewer.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -223,7 +219,6 @@ rules:
   - tokenreviews
   verbs:
   - create
-...
 ---
 # Source: kiali-server/templates/role.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -337,7 +332,6 @@ rules:
   - tokenreviews
   verbs:
   - create
-...
 ---
 # Source: kiali-server/templates/rolebinding.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -361,7 +355,6 @@ subjects:
 - kind: ServiceAccount
   name: kiali
   namespace: istio-system
-...
 ---
 # Source: kiali-server/templates/role-controlplane.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -384,7 +377,6 @@ rules:
   - secrets
   verbs:
   - list
-...
 ---
 # Source: kiali-server/templates/rolebinding-controlplane.yaml
 apiVersion: rbac.authorization.k8s.io/v1
@@ -409,7 +401,6 @@ subjects:
 - kind: ServiceAccount
   name: kiali
   namespace: istio-system
-...
 ---
 # Source: kiali-server/templates/service.yaml
 apiVersion: v1
@@ -438,7 +429,6 @@ spec:
   selector:
     app.kubernetes.io/name: kiali
     app.kubernetes.io/instance: kiali-server
-...
 ---
 # Source: kiali-server/templates/deployment.yaml
 apiVersion: apps/v1
@@ -544,7 +534,6 @@ spec:
         secret:
           secretName: kiali
           optional: true
-...
 ---
 # Source: kiali-server/templates/dashboards/envoy.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -606,7 +595,6 @@ spec:
       metricName: "envoy_listener_http_downstream_rq"
       unit: "rps"
       dataType: "rate"
-...
 ---
 # Source: kiali-server/templates/dashboards/go.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -679,7 +667,6 @@ spec:
       aggregations:
       - label: "pod_name"
         displayName: "Pod"
-...
 ---
 # Source: kiali-server/templates/dashboards/kiali.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -729,7 +716,6 @@ spec:
         displayName: "Function"
       - label: "package"
         displayName: "Package"
-...
 ---
 # Source: kiali-server/templates/dashboards/micrometer-1.0.6-jvm-pool.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -778,7 +764,6 @@ spec:
       aggregations:
       - label: "id"
         displayName: "Pool"
-...
 ---
 # Source: kiali-server/templates/dashboards/micrometer-1.0.6-jvm.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -849,7 +834,6 @@ spec:
         displayName: "Area"
       - label: "id"
         displayName: "Space"
-...
 ---
 # Source: kiali-server/templates/dashboards/micrometer-1.1-jvm.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -923,7 +907,6 @@ spec:
       aggregations:
       - label: "state"
         displayName: "State"
-...
 ---
 # Source: kiali-server/templates/dashboards/microprofile-1.1.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -988,7 +971,6 @@ spec:
       spans: 4
       metricName: "base:memory_used_heap_bytes"
       dataType: "raw"
-...
 ---
 # Source: kiali-server/templates/dashboards/microprofile-x.y.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1032,7 +1014,6 @@ spec:
       spans: 3
       metricName: "base:gc_complete_scavenger_count"
       dataType: "raw"
-...
 ---
 # Source: kiali-server/templates/dashboards/nodejs.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1097,7 +1078,6 @@ spec:
       aggregations:
       - label: "space"
         displayName: "Space"
-...
 ---
 # Source: kiali-server/templates/dashboards/quarkus.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1136,7 +1116,6 @@ spec:
       metricName: "vendor:memory_non_heap_usage_bytes"
       dataType: "raw"
   - include: "microprofile-x.y"
-...
 ---
 # Source: kiali-server/templates/dashboards/springboot-jvm-pool.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1158,7 +1137,6 @@ spec:
   title: JVM Pool Metrics
   items:
   - include: "micrometer-1.0.6-jvm-pool"
-...
 ---
 # Source: kiali-server/templates/dashboards/springboot-jvm.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1180,7 +1158,6 @@ spec:
   title: JVM Metrics
   items:
   - include: "micrometer-1.0.6-jvm"
-...
 ---
 # Source: kiali-server/templates/dashboards/springboot-tomcat.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1202,7 +1179,6 @@ spec:
   title: Tomcat Metrics
   items:
   - include: "tomcat"
-...
 ---
 # Source: kiali-server/templates/dashboards/thorntail.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1230,7 +1206,6 @@ spec:
       spans: 6
       metricName: "vendor:loaded_modules"
       dataType: "raw"
-...
 ---
 # Source: kiali-server/templates/dashboards/tomcat.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1303,7 +1278,6 @@ spec:
       aggregations:
       - label: "name"
         displayName: "Name"
-...
 ---
 # Source: kiali-server/templates/dashboards/vertx-client.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1369,7 +1343,6 @@ spec:
       spans: 6
       metricName: "vertx_http_client_bytesReceived"
       dataType: "histogram"
-...
 ---
 # Source: kiali-server/templates/dashboards/vertx-eventbus.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1434,7 +1407,6 @@ spec:
       aggregations:
       - label: "address"
         displayName: "Eventbus address"
-...
 ---
 # Source: kiali-server/templates/dashboards/vertx-jvm.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1456,7 +1428,6 @@ spec:
   title: JVM Metrics
   items:
   - include: "micrometer-1.1-jvm"
-...
 ---
 # Source: kiali-server/templates/dashboards/vertx-pool.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1530,7 +1501,6 @@ spec:
         displayName: "Name"
       - label: "pool_type"
         displayName: "Type"
-...
 ---
 # Source: kiali-server/templates/dashboards/vertx-server.yaml
 apiVersion: "monitoring.kiali.io/v1alpha1"
@@ -1598,5 +1568,4 @@ spec:
       spans: 6
       metricName: "vertx_http_server_bytesReceived"
       dataType: "histogram"
-...
 
