@@ -1,4 +1,11 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-injection: enabled
+  name: metering
+---
 # Source: prometheus/templates/server/serviceaccount.yaml
 apiVersion: v1
 kind: ServiceAccount
@@ -10,7 +17,7 @@ metadata:
     chart: prometheus-13.6.0
     heritage: Helm
   name: prometheus
-  namespace: istio-system
+  namespace: metering
   annotations:
     {}
 ---
@@ -25,7 +32,7 @@ metadata:
     chart: prometheus-13.6.0
     heritage: Helm
   name: prometheus
-  namespace: istio-system
+  namespace: metering
 data:
   alerting_rules.yml: |
     {}
@@ -364,36 +371,69 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: prometheus
-    namespace: istio-system
+    namespace: metering
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
   name: prometheus
 ---
-# Source: prometheus/templates/server/service.yaml
-apiVersion: v1
-kind: Service
+apiVersion: flagger.app/v1beta1
+kind: Canary
 metadata:
-  labels:
-    component: "server"
-    app: prometheus
-    release: prometheus
-    chart: prometheus-13.6.0
-    heritage: Helm
   name: prometheus
-  namespace: istio-system
+  namespace: metering
 spec:
-  ports:
-    - name: http
-      port: 9090
-      protocol: TCP
-      targetPort: 9090
-  selector:
-    component: "server"
-    app: prometheus
-    release: prometheus
-  sessionAffinity: None
-  type: "ClusterIP"
+  # deployment reference
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: prometheus
+  # the maximum time in seconds for the canary deployment
+  # to make progress before it is rollback (default 600s)
+  progressDeadlineSeconds: 60
+  # HPA reference (optional)
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta1
+    kind: HorizontalPodAutoscaler
+    name: prometheus
+  service:
+    # container port
+    port: 9090
+    # Istio gateways (optional)
+    gateways:
+    - istio-system/public-gateway
+    # Istio virtual service host names (optional)
+    hosts:
+    - "metering.monitoring.app.lynceus.ai"
+  skipAnalysis: true
+  analysis:
+    # schedule interval (default 60s)
+    interval: 15s
+    # max number of failed metric checks before rollback
+    threshold: 10
+    # total number of iterations
+    iterations: 10
+    # canary match condition
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: prometheus
+  namespace: metering
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: prometheus
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      # scale up if usage is above
+      # 99% of the requested CPU (100m)
+      targetAverageUtilization: 99
 ---
 # Source: prometheus/templates/server/deploy.yaml
 apiVersion: apps/v1
@@ -406,7 +446,7 @@ metadata:
     chart: prometheus-13.6.0
     heritage: Helm
   name: prometheus
-  namespace: istio-system
+  namespace: metering
 spec:
   selector:
     matchLabels:
