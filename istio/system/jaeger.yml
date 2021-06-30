@@ -1,3 +1,32 @@
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: tracing-vs
+  namespace: istio-system
+spec:
+  hosts:
+  - "tracing.monitoring.app.lynceus.ai"
+  gateways:
+  - public-gateway
+  http:
+  - route:
+    - destination:
+        host: tracing
+        port:
+          number: 80
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: tracing
+  namespace: istio-system
+spec:
+  host: tracing
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
