@@ -1,8 +1,74 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    istio-injection: enabled
+  name: tracing
+---
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: jaeger
+  namespace: tracing
+spec:
+  # deployment reference
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: jaeger
+  # the maximum time in seconds for the canary deployment
+  # to make progress before it is rollback (default 600s)
+  progressDeadlineSeconds: 60
+  # HPA reference (optional)
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta1
+    kind: HorizontalPodAutoscaler
+    name: jaeger
+  service:
+    # container port
+    port: 16686
+    # Istio gateways (optional)
+    gateways:
+    - istio-system/public-gateway
+    # Istio virtual service host names (optional)
+    hosts:
+    - "tracing.monitoring.app.lynceus.ai"
+  skipAnalysis: true
+  analysis:
+    # schedule interval (default 60s)
+    interval: 15s
+    # max number of failed metric checks before rollback
+    threshold: 10
+    # total number of iterations
+    iterations: 10
+    # canary match condition
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: jaeger
+  namespace: tracing
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: jaeger
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      # scale up if usage is above
+      # 99% of the requested CPU (100m)
+      targetAverageUtilization: 99
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jaeger
-  namespace: istio-system
+  namespace: tracing
   labels:
     app: jaeger
 spec:
@@ -54,23 +120,6 @@ spec:
         - name: data
           emptyDir: {}
 ---
-apiVersion: v1
-kind: Service
-metadata:
-  name: tracing
-  namespace: istio-system
-  labels:
-    app: jaeger
-spec:
-  type: ClusterIP
-  ports:
-    - name: http-query
-      port: 80
-      protocol: TCP
-      targetPort: 16686
-  selector:
-    app: jaeger
----
 # Jaeger implements the Zipkin API. To support swapping out the tracing backend, we use a Service named Zipkin.
 apiVersion: v1
 kind: Service
@@ -78,7 +127,7 @@ metadata:
   labels:
     name: zipkin
   name: zipkin
-  namespace: istio-system
+  namespace: tracing
 spec:
   ports:
     - port: 9411
@@ -91,7 +140,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: jaeger-collector
-  namespace: istio-system
+  namespace: tracing
   labels:
     app: jaeger
 spec:
