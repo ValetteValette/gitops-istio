@@ -386,7 +386,7 @@ spec:
   - "metering.monitoring.app.lynceus.ai"
   gateways:
   - public-gateway
-  http:
+  tcp:
   - route:
     - destination:
         port:
