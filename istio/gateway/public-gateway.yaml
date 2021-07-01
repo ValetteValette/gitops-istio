@@ -39,7 +39,7 @@ spec:
         name: https-pypi-app-lynceus-ai
         protocol: HTTPS
       tls:
-        mode: SIMPLE
+        mode: MUTUAL
         credentialName: pypi-app-lynceus-ai-credential
       hosts:
         - "pypi.app.lynceus.ai"
