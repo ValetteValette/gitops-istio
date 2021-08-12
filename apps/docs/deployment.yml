@@ -25,7 +25,7 @@ spec:
       - name: ecr-docker-login
       containers:
       - name: platform-docs
-        image: 615740825886.dkr.ecr.eu-west-3.amazonaws.com/lynceus-platform-docs:0.5.0
+        image: 615740825886.dkr.ecr.eu-west-3.amazonaws.com/lynceus-platform-docs:0.5.1
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000
