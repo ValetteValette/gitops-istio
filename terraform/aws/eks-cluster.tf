@@ -36,6 +36,23 @@ module "eks" {
       asg_desired_capacity          = 1
     },
   ]
+
+  map_users = [
+    {
+      "groups" = [
+        "system:masters"
+      ]
+      "userarn" = "arn:aws:iam::615740825886:user/avalette"
+      "username" = "avalette"
+    },
+    {
+      "groups" = [
+        "system:masters"
+      ]
+      "userarn" = "arn:aws:iam::615740825886:user/asoni"
+      "username" = "asoni"
+    }
+  ]
 }
 
 data "aws_eks_cluster" "cluster" {
